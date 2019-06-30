@@ -1,0 +1,19 @@
+{
+  "name": "sns-service",
+  "version": "1.0.0",
+  "description": "notification service for tradex",
+  "main": "handler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shiv M",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.485.0",
+    "dotenv": "^8.0.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "serverless-offline": "^5.5.0"
+  }
+}
