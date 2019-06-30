@@ -8,7 +8,7 @@ AWS.config.update({ region: process.env.AWS_REGION });
 
 var api = require('./api/api');
 var fun = require('./routes/functions');
-
+var sns = new AWS.SNS();
 module.exports.hello = async () => {
 
 
@@ -18,13 +18,14 @@ module.exports.hello = async () => {
             errorMsg = error
         })
         var profit = {
-        	"BTC":out.gemData.gemBtcData,
-        	"ETH":out.gemData.gemEthData,
+            "BTC": out.gemData.gemBtcData,
+            "ETH": out.gemData.gemEthData,
             "BTCProfit": fun.calculateProfitUsdInr(500, out.gemData.gemBtcData, out.bitBnsData.bitBnsBtcPrice, 69),
             "ETHProfit": fun.calculateProfitUsdInr(500, out.gemData.gemEthData, out.bitBnsData.bitBnsEthPrice, 69)
         }
         // Create publish parameters
-        var notificationMessage = "\nBTC Profit:" + profit.BTCProfit + "%, ETH Profit:" + profit.ETHProfit+"%.\n"+"Current BTC:"+profit.BTC+"\nCurrent ETH:"+profit.ETH;
+        var notificationMessage = "\nBTC Profit:" + profit.BTCProfit + "%, ETH Profit:" + profit.ETHProfit + "%.\n" + "Current BTC:" + profit.BTC + "\nCurrent ETH:" + profit.ETH;
+        //var notificationMessage ="test"
         var params = {
             Message: notificationMessage,
             /* required */
@@ -32,7 +33,7 @@ module.exports.hello = async () => {
         };
 
         // Create promise and SNS service object
-        var publishTextPromise = new AWS.SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
+        /*var publishTextPromise = new AWS.SNS({ apiVersion: '2010-03-31' }).publish(params).promise();
 
         // Handle promise's fulfilled/rejected states
         publishTextPromise.then(
@@ -44,7 +45,25 @@ module.exports.hello = async () => {
                 console.error(err, err.stack);
             });
 
-        
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                message: 'Go Serverless v1.0! Your function executed successfully!'
+            })
+        }*/
+
+        sns.publish(params, function(err_publish, data) {
+            if (err_publish) {
+                console.log('Error sending a message', err_publish);
+            } else {
+                console.log('Sent message:', data.MessageId);
+                
+            }
+                       
+            
+        });
+
+        return "Hello";
     } catch (error) {
         console.log(error)
     }
