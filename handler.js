@@ -51,17 +51,19 @@ module.exports.hello = async () => {
                 message: 'Go Serverless v1.0! Your function executed successfully!'
             })
         }*/
+        if (profit.BTCProfit < 2 || profit.ETHProfit < 2) {
+            console.log("Triggering SNS");
+            sns.publish(params, function(err_publish, data) {
+                if (err_publish) {
+                    console.log('Error sending a message', err_publish);
+                } else {
+                    console.log('Sent message:', data.MessageId);
 
-        sns.publish(params, function(err_publish, data) {
-            if (err_publish) {
-                console.log('Error sending a message', err_publish);
-            } else {
-                console.log('Sent message:', data.MessageId);
-                
-            }
-                       
-            
-        });
+                }
+            });
+        }else
+            console.log("No SNS trigger as profit is not less than 2");
+
 
         return "Hello";
     } catch (error) {
@@ -71,7 +73,7 @@ module.exports.hello = async () => {
 
 };
 
-//module.exports.hello()
+module.exports.hello()
 /*statusCode: 200,
        body: JSON.stringify({
          message: 'Go Serverless v1.0! Your function executed successfully!',
