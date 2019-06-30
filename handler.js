@@ -9,7 +9,8 @@ AWS.config.update({ region: process.env.AWS_REGION });
 var api = require('./api/api');
 var fun = require('./routes/functions');
 
-module.exports.hello = async (event) => {
+module.exports.hello = async () => {
+
 
     try {
         const out = await api.fetchAll().catch(error => {
@@ -17,11 +18,13 @@ module.exports.hello = async (event) => {
             errorMsg = error
         })
         var profit = {
-            "BTC": fun.calculateProfitUsdInr(500, out.gemData.gemBtcData, out.bitBnsData.bitBnsBtcPrice, 69),
-            "ETH": fun.calculateProfitUsdInr(500, out.gemData.gemEthData, out.bitBnsData.bitBnsEthPrice, 69)
+        	"BTC":out.gemData.gemBtcData,
+        	"ETH":out.gemData.gemEthData,
+            "BTCProfit": fun.calculateProfitUsdInr(500, out.gemData.gemBtcData, out.bitBnsData.bitBnsBtcPrice, 69),
+            "ETHProfit": fun.calculateProfitUsdInr(500, out.gemData.gemEthData, out.bitBnsData.bitBnsEthPrice, 69)
         }
         // Create publish parameters
-        var notificationMessage = "BTC:" + profit.BTC + " ETH:" + profit.ETH;
+        var notificationMessage = "\nBTC Profit:" + profit.BTCProfit + "%, ETH Profit:" + profit.ETHProfit+"%.\n"+"Current BTC:"+profit.BTC+"\nCurrent ETH:"+profit.ETH;
         var params = {
             Message: notificationMessage,
             /* required */
@@ -41,13 +44,7 @@ module.exports.hello = async (event) => {
                 console.error(err, err.stack);
             });
 
-        return {
-            statusCode: 200,
-            body: JSON.stringify({
-                message: 'Go Serverless v1.0! Your function executed successfully!',
-                input: event,
-            }, null, 2)
-        }
+        
     } catch (error) {
         console.log(error)
     }
