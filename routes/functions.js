@@ -8,7 +8,7 @@ module.exports={
 	},
 
 	geminifees:function geminifees(totamt) {
-	    return (totamt - (totamt * 0.01)).toFixed(2);
+	    return (totamt - (totamt * 0.0035))
 
 	},
 
@@ -21,7 +21,7 @@ module.exports={
 	},
 
 	/* INR TO USD PROFIT */
-	calculateProfitInrUsd:function calculateProfitInrUsd(amt, geminiPrice, bitBnsPrice, xchangeRate) {
+	calculateProfitInrUsd:function calculateProfitInrUsd(amt, bitBnsPrice, geminiPrice, xchangeRate) {
 	    var sellAmt = (module.exports.geminifees(((module.exports.fees(amt) / bitBnsPrice) - 0.001) * geminiPrice)) * xchangeRate;
 
 	    var profit = ((sellAmt - amt) / amt) * 100;
