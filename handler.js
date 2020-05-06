@@ -26,10 +26,17 @@ module.exports.hello = async () => {
             "ETHRemitProfit": fun.calculateProfitInrUsd(50000, out.bitBnsData.bitBnsEthPrice, out.gemData.gemEthData, out.gemData.usdInr)
         }
         // Create publish parameters
-        var notificationMessage = "\nBTC Gemini to India Profit:" + profit.BTCProfit + "%, ETH Gemini to India Profit:" + profit.ETHProfit + "\nBTC India to Gemini Profit:" + profit.BTCRemitProfit + "%, ETH India to Gemini Profit:" + profit.ETHRemitProfit + "%.\n" + "Current BTC:" + profit.BTC + "\nCurrent ETH:" + profit.ETH;
+        var notificationMessage = "\nBTC Gemini to India Profit:" + profit.BTCProfit + "%, ETH Gemini to India Profit:" + profit.ETHProfit  + "%.\n"+ "Current BTC:" + profit.BTC + "\nCurrent ETH:" + profit.ETH;
+        var notificationMessageRemit = "\nBTC India to Gemini Profit:" + profit.BTCRemitProfit + "%, ETH India to Gemini Profit:" + profit.ETHRemitProfit + "%.\n" + "Current BTC:" + profit.BTC + "\nCurrent ETH:" + profit.ETH;
         //var notificationMessage ="test"
         var params = {
             Message: notificationMessage,
+            /* required */
+            TopicArn: process.env.TOPIC_ARN
+        };
+
+        var paramsRemit = {
+            Message: notificationMessageRemit,
             /* required */
             TopicArn: process.env.TOPIC_ARN
         };
@@ -53,7 +60,7 @@ module.exports.hello = async () => {
                 message: 'Go Serverless v1.0! Your function executed successfully!'
             })
         }*/
-        if (profit.BTCProfit < 0 || profit.ETHProfit < 0) {
+        if (profit.BTCProfit > 5 || profit.ETHProfit > 5) {
             console.log("Triggering SNS");
             sns.publish(params, function(err_publish, data) {
                 if (err_publish) {
@@ -67,9 +74,9 @@ module.exports.hello = async () => {
 
             console.log("No SNS trigger as profit is not less than 0");
         }
-        if (profit.BTCRemitProfit > -5 || profit.ETHRemitProfit > -5) {
+        if (profit.BTCRemitProfit > -2 || profit.ETHRemitProfit > -2) {
             console.log("Triggering SNS");
-            sns.publish(params, function(err_publish, data) {
+            sns.publish(paramsRemit, function(err_publish, data) {
                 if (err_publish) {
                     console.log('Error sending a message', err_publish);
                 } else {
